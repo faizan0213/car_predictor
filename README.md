@@ -36,23 +36,4 @@ This project is a **machine learning-powered API** built with **FastAPI** that p
   "model": "Elite i20"
 }
 
-# Clone repo
-git clone https://github.com/faizan0213/car_predictor.git
-cd car_predictor
-
-# Create virtual environment (optional)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run the FastAPI app
-uvicorn main:app --reload
-
-
-🧑‍💻 Author
-Faizan
-Flutter & Node.js Developer | Learning AI & Cloud ☁️
-GitHub
 
