@@ -20,20 +20,4 @@ This project is a **machine learning-powered API** built with **FastAPI** that p
 - Algorithm: Linear Regression  
 - Libraries used: `scikit-learn`, `pandas`, `numpy`, `joblib`
 
----
-
-## 🧠 Input Parameters (via JSON)
-
-```json
-{
-  "Year": 2019,
-  "Age": 5,
-  "kmDriven": 42000,
-  "FuelType": "Petrol",
-  "Transmission": "Manual",
-  "Owner": "first",
-  "Brand": "Hyundai",
-  "model": "Elite i20"
-}
-
-
+ 
