@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
-from models import User, TokenResponse, UserRegister
 from auth.hashing import hash_password, verify_password
 from auth.jwt_handler import create_token, decode_token
 from database import get_session
+from models import User, UserRegister, UserLogin, TokenResponse
 
 router = APIRouter()
 
