@@ -5,10 +5,7 @@ import numpy as np
 from fastapi.security import OAuth2PasswordBearer
 from auth.auth_routes import router as AuthRouter
 from auth.jwt_handler import decode_token
-
-
 from fastapi.middleware.cors import CORSMiddleware
-
 
 # Load model and encoders
 model = joblib.load('car_price_model.pkl')
@@ -17,7 +14,6 @@ le_transmission = joblib.load('le_transmission.pkl')
 le_owner = joblib.load('le_owner.pkl')
 le_brand = joblib.load('le_brand.pkl')
 le_model = joblib.load('le_model.pkl')
-
 
 # FastAPI app
 app = FastAPI()
@@ -59,8 +55,8 @@ def predict_price(data: CarData, user=Depends(get_current_user)):
     fuel = data.FuelType.strip().title()
     trans = data.Transmission.strip().title()
     owner = data.Owner.strip().lower()
-    brand = data.Brand.strip()
-    model_name = data.model.strip()
+    brand = data.Brand.strip().title()
+    model_name = data.model.strip().title()
 
     try:
         encoded_input = np.array([
@@ -81,4 +77,4 @@ def predict_price(data: CarData, user=Depends(get_current_user)):
         }
 
     except Exception as e:
-        return {"error": f"Invalid input: {e}"}
+        raise HTTPException(status_code=400, detail=f"Invalid input: {e}")

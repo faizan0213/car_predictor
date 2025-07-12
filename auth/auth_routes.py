@@ -1,30 +1,35 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlmodel import Session, select
 
-from models import UserRegister, TokenResponse
+from models import User, TokenResponse, UserRegister
 from auth.hashing import hash_password, verify_password
 from auth.jwt_handler import create_token, decode_token
+from database import get_session
 
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# Temporary in-memory DB
-users_db = {}
-
 @router.post("/register")
-def register(user: UserRegister):
-    if user.username in users_db:
+def register(user: UserRegister, session: Session = Depends(get_session)):
+    existing_user = session.exec(select(User).where(User.username == user.username)).first()
+    if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
-    users_db[user.username] = hash_password(user.password)
+
+    db_user = User(username=user.username, password=hash_password(user.password))
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
     return {"msg": "User registered successfully"}
 
 @router.post("/login", response_model=TokenResponse)
-def login(form: OAuth2PasswordRequestForm = Depends()):
+def login(form: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     username = form.username
     password = form.password
 
-    if username not in users_db or not verify_password(password, users_db[username]):
+    db_user = session.exec(select(User).where(User.username == username)).first()
+    if not db_user or not verify_password(password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     token = create_token({"sub": username})
